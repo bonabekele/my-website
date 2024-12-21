@@ -1,7 +1,7 @@
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import Image from "next/image";
-import boniImage from "/boni.JPG";
+// import boniImage from "/boni.JPG";
 
 export default function AboutPage() {
   const experience = {
@@ -28,7 +28,7 @@ export default function AboutPage() {
             <Avatar className="h-20 w-20 rounded-full">
               {/* Proper usage of the Next.js Image component */}
               <Image
-                src={boniImage}
+                src={"/boni.JPG"}
                 alt="Bona Bekele"
                 width={80}
                 height={80}
