@@ -1,7 +1,7 @@
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import Image from "next/image";
-import boniImage from "../about/boni.JPG";
+import boniImage from "/boni.JPG";
 
 export default function AboutPage() {
   const experience = {
