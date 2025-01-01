@@ -7,105 +7,78 @@ import { useEffect, useState } from "react";
 interface ImageData {
   src: string;
   subtitle: string;
-  explanation: string;
 }
 
 export default function Gallery() {
-  const [images, setImages] = useState<ImageData[]>(() => {
-    // Load images from localStorage if available
-    const savedImages = localStorage.getItem("galleryImages");
-    return savedImages ? JSON.parse(savedImages) : [];
-  });
+  const [images, setImages] = useState<ImageData[]>([]);
 
-  const [newImage, setNewImage] = useState<ImageData>({
-    src: "",
-    subtitle: "",
-    explanation: "",
-  });
+  // Internal Google Drive link for images (example)
+  const googleDriveLink =
+    "https://drive.google.com/uc?export=view&id=1Hc6D5yUBVhg4__GnUtv8PQkYrtQGdpNJ"; // Example Google Drive image link
 
+  // Load images from localStorage after the component mounts
   useEffect(() => {
-    // Save images to localStorage whenever they change
-    localStorage.setItem("galleryImages", JSON.stringify(images));
+    if (typeof window !== "undefined") {
+      const savedImages = localStorage.getItem("galleryImages");
+      if (savedImages) {
+        setImages(JSON.parse(savedImages));
+      } else {
+        // If no saved images, use the internal Google Drive link
+        setImages([{ src: googleDriveLink, subtitle: "Example Image" }]);
+      }
+    }
+  }, []);
+
+  // Save images to localStorage whenever `images` changes
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      localStorage.setItem("galleryImages", JSON.stringify(images));
+    }
   }, [images]);
 
-  const handleImageUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const file = event.target.files?.[0];
-    if (file) {
-      const reader = new FileReader();
-      reader.onload = (e) => {
-        setNewImage((prev) => ({ ...prev, src: e.target?.result as string }));
-      };
-      reader.readAsDataURL(file);
-    }
-  };
-
-  const addImage = () => {
-    if (newImage.src && newImage.subtitle && newImage.explanation) {
-      setImages([...images, newImage]);
-      setNewImage({
-        src: "",
-        subtitle: "",
-        explanation: "",
-      });
-    } else {
-      alert(
-        "Please upload an image and fill out both fields (Subtitle and Explanation)."
-      );
-    }
-  };
-
-  const deleteImage = (index: number) => {
-    const updatedImages = images.filter((_, i) => i !== index);
-    setImages(updatedImages);
-  };
-
   return (
-    <div className="min-h-screen p-8 lg:p-12 ml-40 mr-auto">
+    <div className="min-h-screen p-8 lg:p-12 ml-4 sm:ml-10 md:ml-40 max-w-4xl">
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5 }}
         className="max-w-6xl mx-auto"
       >
-        {/* Form to add a new image */}
+        {/* Brief explanation of Graphics Design */}
         <div className="mb-8">
-          <h2 className="text-2xl font-bold mb-4">Add a New Image</h2>
-          <div className="flex flex-col gap-4">
-            <input
-              type="file"
-              accept="image/*"
-              onChange={handleImageUpload}
-              className="border p-2 rounded"
-            />
-            <input
-              type="text"
-              placeholder="Subtitle"
-              value={newImage.subtitle}
-              onChange={(e) =>
-                setNewImage({ ...newImage, subtitle: e.target.value })
-              }
-              className="border p-2 rounded"
-            />
-            <textarea
-              placeholder="Explanation"
-              value={newImage.explanation}
-              onChange={(e) =>
-                setNewImage({ ...newImage, explanation: e.target.value })
-              }
-              className="border p-2 rounded"
-            />
-            <button
-              onClick={addImage}
-              className="bg-blue-500 text-white p-2 rounded hover:bg-blue-600"
-            >
-              Add Image
-            </button>
-          </div>
+          <h2 className="text-2xl font-bold mb-4">Graphics Design Overview</h2>
+          <p className="text-lg text-gray-700">
+            Graphics Design involves creating visual content to communicate
+            messages, using elements like typography, imagery, and color theory
+            to craft engaging and visually appealing designs. It plays a crucial
+            role in branding, marketing, and user experience.
+          </p>
         </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+        {/* Google Drive Link for Images */}
+        <div className="mb-8">
+          <h2 className="text-2xl font-bold mb-4">Explore My Image Gallery</h2>
+          <p className="text-lg text-gray-700">
+            Click below to view the image gallery stored on Google Drive. Feel
+            free to explore my collection!
+          </p>
+          <a
+            href={googleDriveLink}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="mt-4 inline-block bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-600"
+          >
+            View Image Gallery on Google Drive
+          </a>
+        </div>
+
+        {/* Gallery List */}
+        <div className="flex flex-col gap-8">
           {images.map((image, index) => (
-            <Card key={index} className="overflow-hidden">
+            <Card
+              key={index}
+              className="overflow-hidden bg-white shadow-lg rounded-lg"
+            >
               <div className="relative w-full" style={{ height: "200px" }}>
                 <img
                   src={image.src}
@@ -121,15 +94,6 @@ export default function Gallery() {
                 <h3 className="text-lg font-bold text-center">
                   {image.subtitle}
                 </h3>
-                <p className="text-sm mt-2 text-gray-700">
-                  {image.explanation}
-                </p>
-                <button
-                  onClick={() => deleteImage(index)}
-                  className="mt-4 bg-red-500 text-white p-2 rounded hover:bg-red-600"
-                >
-                  Delete Image
-                </button>
               </div>
             </Card>
           ))}

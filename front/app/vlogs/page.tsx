@@ -3,87 +3,77 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { motion } from "framer-motion";
 import Image from "next/image";
-import { useState, useEffect } from "react";
+import { useEffect, useState } from "react";
 
 export default function Vlogs() {
   const [vlogs, setVlogs] = useState<any[]>([]);
 
-  const [newVlog, setNewVlog] = useState({
-    title: "",
-    media: "",
-    description: "",
-  });
+  const googleDriveLink =
+    "https://drive.google.com/drive/folders/your-folder-id"; // Replace with your actual Google Drive folder link
 
-  // Retrieve vlogs from localStorage on component mount
+  const vlogPrompts = [
+    {
+      title: "Vlog Prompt 1",
+      subtitle: "A day in the life of a student",
+      media: "/path-to-image-or-video1.jpg", // Replace with appropriate media paths
+      description: "Showcase your daily routine and how you manage your time.",
+    },
+    {
+      title: "Vlog Prompt 2",
+      subtitle: "Exploring nature",
+      media: "/path-to-image-or-video2.jpg",
+      description:
+        "Capture a beautiful walk or hike through a local park or trail.",
+    },
+    {
+      title: "Vlog Prompt 3",
+      subtitle: "Cultural experiences",
+      media: "/path-to-image-or-video3.jpg",
+      description:
+        "Share a glimpse of cultural events, traditions, or festivals.",
+    },
+  ];
+
   useEffect(() => {
     const storedVlogs = localStorage.getItem("vlogs");
     if (storedVlogs) {
       setVlogs(JSON.parse(storedVlogs));
+    } else {
+      setVlogs(vlogPrompts);
     }
   }, []);
 
-  // Save vlogs to localStorage whenever they change
   useEffect(() => {
     if (vlogs.length > 0) {
       localStorage.setItem("vlogs", JSON.stringify(vlogs));
     }
   }, [vlogs]);
 
-  const handleFileUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const file = event.target.files?.[0];
-    if (file) {
-      const reader = new FileReader();
-      reader.onload = () => {
-        if (file.type.includes("video")) {
-          setNewVlog({
-            ...newVlog,
-            media: reader.result as string,
-          });
-        } else {
-          setNewVlog({
-            ...newVlog,
-            media: reader.result as string,
-          });
-        }
-      };
-      reader.readAsDataURL(file);
-    }
-  };
-
-  const handleAddVlog = () => {
-    if (newVlog.title && newVlog.media && newVlog.description) {
-      const updatedVlogs = [...vlogs, newVlog];
-      setVlogs(updatedVlogs);
-      setNewVlog({
-        title: "",
-        media: "",
-        description: "",
-      });
-    } else {
-      alert("Please fill all fields and upload a media.");
-    }
-  };
-
-  const handleDeleteVlog = (index: number) => {
-    const updatedVlogs = vlogs.filter((_, i) => i !== index);
-    setVlogs(updatedVlogs);
-    
-    // Also update localStorage to remove the deleted vlog
-    localStorage.setItem("vlogs", JSON.stringify(updatedVlogs));
-  };
-
   return (
-    <div className="min-h-screen p-8 lg:p-12 ml-40 mr-auto">
+    <div className="min-h-screen p-4 sm:p-6 lg:p-8 mx-auto">
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5 }}
-        className="max-w-6xl mx-auto"
+        className="max-w-4xl mx-auto"
       >
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        {/* Introduction Section */}
+        <div className="mb-8 text-center">
+          <h1 className="text-2xl font-bold">Welcome to My Vlogs</h1>
+          <p className="mt-4 text-gray-700">
+            Vlogs are a great way to share my personal journeys, experiences,
+            and adventures with the world. Whether it's a day in the life, a
+            scenic hike, or a cultural festival, each video captures a unique
+            moment. Join me as we explore exciting trips, document meaningful
+            journeys, and uncover stories worth sharing!
+          </p>
+        </div>
+
+        {/* Vlogs Grid */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
           {vlogs.map((vlog, index) => (
             <motion.div
-              key={vlog.title + index} // Use a combination of title and index to ensure uniqueness
+              key={vlog.title + index}
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: index * 0.1 }}
@@ -109,48 +99,26 @@ export default function Vlogs() {
                   <CardTitle className="text-xl">{vlog.title}</CardTitle>
                 </CardHeader>
                 <CardContent>
+                  <p className="font-semibold text-gray-700 mb-2">
+                    {vlog.subtitle}
+                  </p>
                   <p className="text-muted-foreground">{vlog.description}</p>
-                  <button
-                    onClick={() => handleDeleteVlog(index)}
-                    className="mt-4 bg-red-500 text-white p-2 rounded hover:bg-red-600"
-                  >
-                    Delete Vlog
-                  </button>
                 </CardContent>
               </Card>
             </motion.div>
           ))}
         </div>
 
-        <div className="mt-8">
-          <h2 className="text-2xl font-bold mb-4">Add New Vlog</h2>
-          <input
-            type="text"
-            placeholder="Title"
-            value={newVlog.title}
-            onChange={(e) => setNewVlog({ ...newVlog, title: e.target.value })}
-            className="border p-2 rounded mb-4 w-full"
-          />
-          <input
-            type="file"
-            accept="image/*,video/*"
-            onChange={handleFileUpload}
-            className="border p-2 rounded mb-4 w-full"
-          />
-          <textarea
-            placeholder="Description"
-            value={newVlog.description}
-            onChange={(e) =>
-              setNewVlog({ ...newVlog, description: e.target.value })
-            }
-            className="border p-2 rounded mb-4 w-full"
-          />
-          <button
-            onClick={handleAddVlog}
-            className="bg-blue-500 text-white p-2 rounded hover:bg-blue-600 w-full"
+        {/* Google Drive Link */}
+        <div className="mt-8 text-center">
+          <a
+            href={googleDriveLink}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="bg-blue-500 text-white p-2 rounded hover:bg-blue-600 inline-block"
           >
-            Add Vlog
-          </button>
+            View More Vlogs on Google Drive
+          </a>
         </div>
       </motion.div>
     </div>

@@ -1,13 +1,23 @@
-"use client";
+"use client"; // Add this line at the top of the file
 
 import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
+import { Button as OriginalButton } from "@/components/ui/button"; // Assuming Button component is from your UI library
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { AnimatePresence, motion } from "framer-motion";
-import { useState } from "react";
-import { FaGithub, FaExternalLinkAlt } from "react-icons/fa"; // Importing GitHub and external link icons
+import { useState } from "react"; // This now works because of the 'use client' directive
+import { FaExternalLinkAlt, FaGithub } from "react-icons/fa"; // Import icons
 
-const projects = [
+// Define the Project type
+interface Project {
+  title: string;
+  description: string;
+  category: string;
+  tags: string[];
+  github: string;
+  demo: string;
+}
+
+const projects: Project[] = [
   {
     title: "AI Image Recognition",
     description: "Deep learning model for medical image analysis",
@@ -50,6 +60,37 @@ const categories = [
   "Machine Learning",
 ];
 
+// Custom Button component to handle rendering as <a> or <button>
+interface CustomButtonProps {
+  href?: string;
+  target?: "_blank" | "_self" | "_parent" | "_top";
+  children: React.ReactNode;
+  className?: string;
+  onClick?: () => void;
+}
+
+const CustomButton: React.FC<CustomButtonProps> = ({
+  href,
+  target,
+  children,
+  className,
+  onClick,
+}) => {
+  if (href) {
+    return (
+      <a href={href} target={target} className={className}>
+        {children}
+      </a>
+    );
+  }
+
+  return (
+    <OriginalButton onClick={onClick} className={className}>
+      {children}
+    </OriginalButton>
+  );
+};
+
 export default function Projects() {
   const [selectedCategory, setSelectedCategory] = useState("All");
 
@@ -72,14 +113,14 @@ export default function Projects() {
 
         <div className="flex gap-2 mb-8 overflow-x-auto pb-4">
           {categories.map((category) => (
-            <Button
+            <OriginalButton
               key={category}
               variant={selectedCategory === category ? "default" : "outline"}
               onClick={() => setSelectedCategory(category)}
               className="whitespace-nowrap"
             >
               {category}
-            </Button>
+            </OriginalButton>
           ))}
         </div>
 
@@ -111,24 +152,20 @@ export default function Projects() {
                     </div>
 
                     <div className="flex gap-4">
-                      <Button
-                        variant="outline"
-                        as="a"
+                      <CustomButton
                         href={project.github}
                         target="_blank"
-                        className="flex items-center gap-2" // Aligning icon with text
+                        className="flex items-center gap-2"
                       >
                         <FaGithub /> GitHub
-                      </Button>
-                      <Button
-                        variant="outline"
-                        as="a"
+                      </CustomButton>
+                      <CustomButton
                         href={project.demo}
                         target="_blank"
-                        className="flex items-center gap-2" // Aligning icon with text
+                        className="flex items-center gap-2"
                       >
                         <FaExternalLinkAlt /> Demo
-                      </Button>
+                      </CustomButton>
                     </div>
                   </CardContent>
                 </Card>

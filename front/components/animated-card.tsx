@@ -4,6 +4,7 @@ import { Card, CardProps } from "@/components/ui/card";
 import { motion } from "framer-motion";
 
 interface AnimatedCardProps extends CardProps {
+  children?: React.ReactNode; // Ensure children is part of the props
   delay?: number;
 }
 

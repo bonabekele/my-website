@@ -38,22 +38,20 @@ export default function ServicesPage() {
 
   const handleSubmit = () => {
     if (email && comment) {
-      // EmailJS Configuration
       const serviceID = "service_bwkp0c3";
-      const templateID = "template_oki7tv9"; // Replace with your actual template ID
+      const templateID = "template_oki7tv9";
       const publicKey = "UQ5wVVdqo4fW_h7CI";
 
       const templateParams = {
         sendername: "Website User",
         replyto: email,
-        to: "bekelebona058@gmail.com", // Replace with your email
+        to: "bekelebona058@gmail.com",
         Subject: "New Inquiry",
         message: comment,
       };
 
       emailjs.send(serviceID, templateID, templateParams, publicKey).then(
         (response) => {
-          console.log("Email sent successfully!", response);
           toast.success("Your message has been sent!");
           setIsSubmitted(true);
           setEmail("");
@@ -61,7 +59,6 @@ export default function ServicesPage() {
           setTimeout(() => setIsSubmitted(false), 3000);
         },
         (error) => {
-          console.error("Failed to send email", error);
           toast.error("Failed to send your message. Please try again.");
         }
       );
@@ -71,11 +68,12 @@ export default function ServicesPage() {
   };
 
   return (
-    <div className="container py-10 mx-auto max-w-7xl">
+    <div className="container py-10 mx-auto max-w-7xl ml-40">
       <div className="grid gap-6">
-        <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-          {services.map((service, index) => (
-            <Card key={service.id} className={index < 2 ? "ml-20" : ""}>
+        {/* Services Section */}
+        <div className="grid gap-4 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 ml-40">
+          {services.map((service) => (
+            <Card key={service.id} className="mx-auto">
               <CardHeader>
                 <CardTitle>{service.title}</CardTitle>
               </CardHeader>
@@ -87,7 +85,7 @@ export default function ServicesPage() {
         </div>
 
         {/* Contact Form */}
-        <Card className="w-full max-w-800 mx-auto ml-20">
+        <Card className="w-full max-w-4xl mx-auto ml-40">
           <CardHeader>
             <CardTitle>Contact Me</CardTitle>
           </CardHeader>
@@ -100,7 +98,7 @@ export default function ServicesPage() {
                   placeholder="Enter your email"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  className="w-full p-2 border border-gray-300 rounded"
+                  className="w-full p-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
                 />
               </div>
 
@@ -110,7 +108,7 @@ export default function ServicesPage() {
                   placeholder="Any comments or inquiries?"
                   value={comment}
                   onChange={(e) => setComment(e.target.value)}
-                  className="w-full p-2 border border-gray-300 rounded"
+                  className="w-full p-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
                   rows={4}
                 />
               </div>
@@ -127,7 +125,7 @@ export default function ServicesPage() {
             </Button>
           </CardFooter>
           {isSubmitted && (
-            <div className="mt-4 text-green-600 font-semibold text-center">
+            <div className="mt-4 text-green-600 font-semibold text-center w-full">
               Submitted Successfully!
             </div>
           )}
