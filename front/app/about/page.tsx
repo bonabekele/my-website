@@ -20,7 +20,8 @@ export default function AboutPage() {
       <Card>
         <CardHeader>
           <div className="flex items-center space-x-4 flex-wrap sm:flex-nowrap">
-            <Avatar className="h-20 w-20 rounded-full bg-gray-200 ml-40 overflow-hidden"></Avatar>
+            {/* <Avatar className="h-20 w-20 rounded-full bg-gray-200 ml-40 overflow-hidden"></Avatar> */}
+            <img className="h-20 w-20 rounded-full bg-gray-200 ml-40 overflow-hidden" src="/boni.png" alt="bona bekele's image" />
             <CardTitle className="text-3xl sm:text-4xl mt-4 sm:mt-0">
               About Me
             </CardTitle>
